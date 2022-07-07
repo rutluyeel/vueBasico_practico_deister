@@ -1,0 +1,52 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    PROC: pos_setemployeecurrentstore                                          -->
+<!--                                                                                    -->
+<!--    Set an employee as a user of the current store                                  -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name='pos_setemployeecurrentstore'>
+    <args>
+        <arg name='p_employee_id'      like='pos_employee_stores.employee_id'   mode='in'/>
+        <arg name='p_user_code'        like='pos_terminal.user_code'            mode='in'/>
+    </args>
+
+    <define>
+        <variable name='m_store' like='pos_terminal.store_code' />
+        <variable name='m_count' type='integer' />
+    </define>
+
+    <body>
+        <select>pos_terminal.store_code
+            <into>m_store</into>
+             FROM pos_terminal
+            WHERE pos_terminal.user_code = p_user_code
+        </select>
+
+        <!-- =========================================================== -->
+        <!-- check if the employee is already in the selected store      -->
+        <!-- If so return like we has just added.                        -->
+        <!-- =========================================================== -->
+        <select>COUNT(*)
+            <into>m_count</into>
+             FROM pos_employee_stores
+            WHERE pos_employee_stores.employee_id = p_employee_id
+              AND pos_employee_stores.store_code = m_store
+        </select>
+
+        <if>
+            <expr>m_count = 0</expr>
+            <then>
+
+            <!-- =========================================================== -->
+            <!-- Create the relatin between the employee and the store       -->
+            <!-- =========================================================== -->
+                <insert table='pos_employee_stores'>
+                    <column name='employee_id'>p_employee_id</column>
+                    <column name='store_code'>m_store</column>
+                </insert>
+            </then>
+        </if>
+
+    </body>
+</procedure>

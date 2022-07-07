@@ -1,0 +1,51 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    XUDP: pos_employee_toggle                                                       -->
+<!--                                                                                    -->
+<!--    Process that is responsible for removing an employee                            -->
+<!--    or add it if it does not belong to the store                                    -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+
+<procedure name='pos_employee_toggle'>
+    <args>
+        <arg name='p_employee_id'      like='pos_employee_access_control.employee_id'   mode='in'/>
+        <arg name='p_store_code'       like='pos_employee_stores.store_code'            mode='in'/>
+    </args>
+
+    <define>
+        <variable name='m_has_employee' type='integer' />
+    </define>
+
+    <body>
+        <select>
+            <columns>
+                COUNT(*)
+            </columns>
+            <into>
+                m_has_employee
+            </into>
+             FROM pos_employee_stores
+            WHERE employee_id = p_employee_id
+              AND store_code = p_store_code
+        </select>
+
+        <if>
+            <expr>has_employee != 0></expr>
+            <then>
+                <delete table='pos_employee_stores'>
+                    <where>
+                        employee_id   =   p_employee_id AND
+                        store_code =   p_store_code
+                    </where>
+                </delete>
+            </then>
+            <else>
+                <insert table='pos_employee_stores'>
+                    <column name='employee_id'> p_employee_id </column>
+                    <column name='store_code'> p_store_code </column>
+                </insert>
+            </else>
+        </if>
+    </body>
+</procedure>

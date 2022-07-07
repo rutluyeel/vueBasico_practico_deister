@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-for</title>
+</head>
+<body>
+  
+    <div id="app">
+        <li v-for="data in object">
+            {{data}}
+        </li>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                object:{
+                    nombre: "Daniel",
+                    apellido: "Restrepo",
+                    edad:80
+                }
+            }
+        })
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    XUDP: pos_catalog_product_toggle                                                -->                                      -->
+<!--                                                                                    -->
+<!--    Process call to add or remove products on catalog                               -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name='pos_catalog_product_toggle'>
+    <args>
+        <arg name='p_product_id'      like='pos_catalog_products.product_id'   mode='in'/>
+        <arg name='p_catalog_code'    like='pos_catalog_products.catalog_code' mode='in'/>
+    </args>
+
+    <define>
+        <variable name='m_has_catalog' type='integer' />
+    </define>
+
+    <body>
+        <select>
+            <columns>
+                COUNT(*)    
+            </columns>
+            <into>
+                m_has_catalog
+            </into>
+            FROM pos_catalog_products
+            WHERE product_id = product_id AND
+                  catalog_code = catalog_code
+        </select>
+
+        <!-- ==================================== -->
+        <!-- Tag exists                           -->
+        <!-- ==================================== -->
+        <if>
+            <expr>m_has_catalog != 0</expr>
+            <then>
+                <delete table='pos_catalog_products'>
+                    <where>
+                        product_id   =   p_product_id AND
+                        catalog_code =   p_catalog_code
+                    </where>
+                </delete>
+            </then>
+
+            <!-- ==================================== -->
+            <!-- Tag don't exists                     -->
+            <!-- ==================================== -->
+            <else>
+                <insert table='pos_catalog_products'>
+                    <column name='product_id'> p_product_id </column>
+                    <column name='catalog_code'> p_catalog_code </column>
+                </insert>
+            </else>
+        </if>
+    </body>
+</procedure>

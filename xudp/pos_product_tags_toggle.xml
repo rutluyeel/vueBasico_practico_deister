@@ -1,0 +1,51 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    PROC: pos_getCurrentTicketId                                                    -->
+<!--                                                                                    -->
+<!--    Process call to add or remove tags on products                                  -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name='pos_product_tags_toggle'>
+    <args>
+        <arg name='p_product_id'   like='pos_employee.employee_id'   mode='in'/>
+        <arg name='p_tag_id'       like='pos_terminal.user_code'     mode='in'/>
+    </args>
+
+    <define>
+        <variable name='m_has_tag' type='integer' />
+    </define>
+
+    <body>
+        <select>COUNT(*)
+            <into>m_has_tag</into>
+             FROM pos_product_tags
+            WHERE product_id = p_product_id 
+              AND tag_id = p_tag_id
+        </select>
+
+        <!-- ==================================== -->
+        <!-- Tag exists                           -->
+        <!-- ==================================== -->
+        <if>
+            <expr>m_has_tag != 0</expr>
+            <then>
+                <delete table='pos_product_tags'>
+                    <where>
+                        product_id = p_product_id AND
+                        tag_id = p_tag_id
+                    </where>
+                </delete>
+            </then>
+
+            <!-- ==================================== -->
+            <!-- Tag don't exists                     -->
+            <!-- ==================================== -->
+            <else>
+                <insert table='pos_product_tags'>
+                    <column name='product_id'>p_product_id</column>
+                    <column name='tag_ig'>p_tag_id</column>
+                </insert>
+            </else>
+        </if>
+    </body>
+</procedure>

@@ -1,0 +1,67 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    PROC: pos_future_prices_execute                                                 -->                                 
+<!--                                                                                    -->
+<!--    Updates product combinations, prices as parametrized                            -->
+<!--    in table pos_future_prices_item                                                 -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name='pos_future_prices_execute'>
+    <define>
+        <variable name='n_future_cabid' like='pos_future_prices_head.future_cabid' />
+        <variable name='m_product_id'   like='pos_future_prices_item.product_id' />
+        <variable name='m_rel_id'       like='pos_future_prices_item.rel_id' />
+        <variable name='m_future_price' like='pos_future_prices_item.future_price' />
+    </define>
+
+    <body>
+        <!-- ======================================================== -->
+        <!-- Retrieve data of batches to process                      -->
+        <!-- Iterate different batches, retrieve items                -->
+        <!-- ======================================================== -->
+        <foreach>
+            <select>future_cabid
+                <into>n_future_cabid</into>
+                FROM pos_future_prices_head
+               WHERE future_status = 1
+                 AND future_date   = TODAY
+            </select>
+            
+            <foreach>
+                <select>
+                        pos_future_prices_item.product_id,
+                        pos_future_prices_item.rel_id,
+                        pos_future_prices_item.future_price
+                    <into>
+                        m_product_id, m_rel_id, m_future_price
+                    </into>
+                    FROM pos_future_prices_item
+                   WHERE future_cabid = n_future_cabid
+                </select>
+
+                <!-- ======================================================== -->
+                <!-- Update combinations price                                -->
+                <!-- ======================================================== -->
+                <update table='pos_product_combinations'>
+                    <column name='impcta'> m_future_price </column>
+                    <where>
+                        rel_id     = m_rel_id AND
+                        product_id = m_product_id
+                    </where>
+                </update>
+            </foreach>
+
+            <!-- ======================================================== -->
+            <!-- Update header status                                     -->
+            <!-- ======================================================== -->
+            <update table='pos_future_prices_head'>
+                <column name='future_status'>2</column>
+                <column name='future_errmsg'> <null /> </column>
+                <where>
+                    future_cabid = n_future_cabid
+                </where>
+            </update>
+        </foreach>
+
+    </body>
+</procedure>

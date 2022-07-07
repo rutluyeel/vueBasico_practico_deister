@@ -1,0 +1,58 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    XUDP: pos_employee_start_timer                                                  -->
+<!--                                                                                    -->
+<!--    Get start timer by employe                                                      -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name='pos_employee_start_timer'>
+    <args>
+        <arg name='p_employee_id'      like='pos_employee_access_control.employee_id'   mode='in'/>
+        <arg name='p_user_code'        like='pos_terminal.user_code'                    mode='in'/>
+    </args>
+
+    <define>
+        <variable name='m_terminal_id' like='pos_terminal.terminal_id' />
+        <variable name='m_store_code'  like='pos_terminal.store_code'  />
+        <variable name='m_acc_id'      like='pos_employee_access_control.acc_id'  />
+    </define>
+
+    <body>
+        <select>
+            <columns>
+                pos_terminal.terminal_id, pos_terminal.store_code 
+            </columns>
+            <into>
+                m_terminal_id, m_store_code
+            </into>
+            FROM pos_terminal
+            WHERE pos_terminal.user_code = p_user_code
+        </select>
+
+
+        <select>
+            <columns>
+                pos_employee_access_control.acc_id 
+            </columns>
+            <into>
+                m_acc_id
+            </into>
+            FROM pos_employee_access_control, pos_terminal, pos_store
+            WHERE pos_terminal.terminal_id = pos_employee_access_control.terminal_id 
+              AND pos_store.store_code = m_store_code
+              AND pos_employee_access_control.employee_id = p_employee_id 
+              AND acc_time_end IS NULL
+        </select>
+
+        <if>
+            <expr><ne>m_acc_id</ne></expr>
+            <then>
+                <insert table='pos_employee_access_control'>
+                    <column name='employee_id'> p_employee_id </column>
+                    <column name='terminal_id'> m_terminal_id </column>
+                    <column name='acc_time_ini'> <current/> </column>
+                </insert>
+            </then>
+        </if>
+    </body>
+</procedure>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-show</title>
+</head>
+<body>
+    <div id="app">
+        <input type="number" v-model="nota">
+        <!--true-->
+        <p v-show="resultado()">Pasaste el examen</p>
+        <!--false-->
+        <p v-show="!resultado()">No pasaste el examen</p>
+
+    </div>
+     
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                nota: 0
+            },
+            methods: {
+                resultado(){
+                    if (this.nota >= 3.0 & this.nota <= 5.0){
+                        return true
+                    }else{
+                        return false
+                    }
+                    
+
+                }
+            }
+        })
+    </script>
+    
+
+    
+</body>
+</html>

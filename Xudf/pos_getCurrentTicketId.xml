@@ -1,0 +1,35 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    PROC: pos_getCurrentTicketId                                                    -->
+<!--                                                                                    -->
+<!--    get the ticket_id for the current opened ticket                                 -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<function name='pos_getCurrentTicketId'>
+    <args>
+        <arg name='p_employee_id'      like='pos_ticketh_open.employee_id'   />
+        <arg name='p_user_code'        like='pos_terminal.user_code'         />
+    </args>
+
+    <returns like='pos_ticketh_open.ticket_id' />
+
+    <define>
+        <variable name='m_ticket_id' like='pos_ticketh_open.ticket_id' />
+    </define>
+
+    <body>
+        <select>pos_ticketh_open.ticket_id
+            <into>m_ticket_id</into>
+             FROM pos_ticketh_open, pos_store, pos_terminal
+            WHERE pos_ticketh_open.store_code = pos_store.store_code
+              AND pos_store.store_code = pos_terminal.store_code
+              AND pos_ticketh_open.ticket_state = 0 
+              AND pos_ticketh_open.employee_id = p_employee_id
+              AND pos_terminal.user_code = p_user_code
+        </select>
+
+        <return>
+            m_ticket_id
+        </return>
+    </body>
+</function>

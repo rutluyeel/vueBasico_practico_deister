@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-if</title>
+</head>
+<body>
+    <div id="app">
+        <input type="type" v-model="login">
+        <p>{{password}}</p>
+        <div v-if="isLogin">Estas logeado</div>
+        <div v-else="isLogin">No estas logeado</div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el:'#app',
+            data:{
+                password: 'dasdaklsjklasjd5',
+                login:''
+            },
+            computed:{
+                isLogin(){
+                    if(this.password == this.login){
+                        return true
+                    }
+                    return false
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>

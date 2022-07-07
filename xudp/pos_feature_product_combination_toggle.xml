@@ -1,0 +1,48 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    XUDP: pos_feature_product_combination_toggle                                    -->                                      -->
+<!--                                                                                    -->
+<!--    Process in charge of adding combinations or eliminating them                    -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name='pos_feature_product_combination_toggle'>
+    <args>
+        <arg name='p_product_combination_id'      like='pos_product_combinations_features.product_combination_id'   mode='in'/>
+        <arg name='p_feature_id'                  like='pos_product_combinations_features.feature_id'               mode='in'/>
+        <arg name='p_value_id'                    like='pos_product_combinations_features.value_id'                 mode='in'/>
+    </args>
+
+    <define>
+        <variable name='m_count' type='integer' />
+    </define>
+
+    <body>
+        <select>COUNT(*)
+            <into>m_count</into>
+             FROM pos_employee_stores
+            WHERE product_combination_id = p_product_combination_id
+              AND feature_id = p_feature_id
+              AND value_id   = p_value_id
+        </select>
+
+        <if>
+            <expr>m_count = 0</expr>
+            <then>
+                <insert table='pos_product_combinations_features'>
+                    <column name='product_combination_id'> p_product_combination_id </column>
+                    <column name='feature_id'> p_feature_id </column>
+                    <column name='value_id'> p_value_id </column>
+                </insert>
+            </then>
+            <else>
+                <delete table='pos_product_combinations_features'>
+                    <where>
+                        product_combination_id = p_product_combination_id AND
+                        feature_id = p_feature_id AND
+                        value_id   = p_value_id
+                    </where>
+                </delete>
+            </else>
+        </if>
+    </body>
+</procedure>

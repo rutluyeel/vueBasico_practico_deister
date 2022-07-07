@@ -1,0 +1,37 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    PROC: pos_createNewEmployeeSession                                              -->
+<!--                                                                                    -->
+<!--    Create a new session for the employee and return the serial                     -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name="pos_createNewEmployeeSession">
+    <args>
+        <arg name='p_employee_id'      type='integer'                  mode='in' />
+        <arg name='p_user_code'        like='pos_terminal.user_code'   mode='in' />
+
+        <arg name='o_terminal_id'      like='pos_terminal.terminal_id' mode='out'/>
+    </args>
+
+    <define>
+        <variable name='m_store_code' like='pos_terminal.store_code' />
+    </define>
+
+    <body>
+        <select>pos_terminal.store_code
+            <into>
+                m_store_code
+            </into>
+            FROM pos_terminal
+            WHERE user_code = p_user_code
+        </select>
+
+        <insert table='pos_terminal'>
+            <column name='employee_id'>p_employee_id</column>
+            <column name='store_code'>m_store_code</column>
+        </insert>
+
+        <set name='o_terminal_id'><sqlca.serial /></set>
+    </body>
+</procedure>
+

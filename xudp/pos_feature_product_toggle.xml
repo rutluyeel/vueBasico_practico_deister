@@ -1,0 +1,54 @@
+<!-- ================================================================================== -->
+<!--                                                                                    -->
+<!--    PROC: pos_feature_product_toggle                                                       -->                                      -->
+<!--                                                                                    -->
+<!--    Add or remove product features                                                                      -->
+<!--                                                                                    -->
+<!-- ================================================================================== -->
+<procedure name='pos_feature_product_toggle'>
+    <args>
+        <arg name='p_product_id'      like='pos_product_features.product_id'   mode='in'/>
+        <arg name='p_feature_id'      like='pos_product_features.feature_id'   mode='in'/>
+        <arg name='p_value_id'        like='pos_product_features.value_id'     mode='in'/>
+    </args>
+
+    <define>
+        <variable name='m_count' type='integer' />
+    </define>
+
+    <body>
+
+        <select>
+            <columns>
+                COUNT(*)
+            </columns>
+            <into>
+                m_count
+            </into>
+             FROM pos_product_features
+            WHERE product_id = p_product_id
+              AND feature_id = p_feature_id
+              AND value_id   = p_value_id
+        </select>
+
+        <if>
+            <expr>m_count = 0</expr>
+            <then>
+                <insert table='pos_product_features'>
+                    <column name='product_id'> p_product_id </column>
+                    <column name='feature_id'> p_feature_id </column>
+                    <column name='value_id'> p_value_id </column>
+                </insert>
+            </then>
+            <else>
+                <delete table='pos_product_features'>
+                    <where>
+                        product_id = p_product_id AND
+                        feature_id = p_feature_id AND
+                        value_id   = p_value_id
+                    </where>
+                </delete>
+            </else>
+        </if>
+    </body>
+</procedure>

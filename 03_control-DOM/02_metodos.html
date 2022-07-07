@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodos V2</title>
+</head>
+<body>
+    <div id="app">
+    <h3>{{numero1}}</h3>
+    <h3>{{numero2}}</h3>
+    <input type="number" v-model="numero1">
+    <input type="number" v-model="numero2">
+    <hr>
+    <p>SUMA:  {{suma()}}</p>
+    <p>RESTA: {{resta()}}</p>
+    <p>MULT:  {{mult()}}</p>
+    <p>DIV:   {{div()}}</p>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+
+    <script>
+       var app = new Vue({
+        el: '#app',
+        data: {
+            numero1: 0,
+            numero2: 0,
+
+        },
+
+
+       //metodos
+
+       methods:{
+        suma: function(){
+            return this.numero1 - (-this.numero2)
+        },
+        resta: function(){
+            return this.numero1 - this.numero2
+        },
+        mult: function(){
+            return this.numero1 * this.numero2
+        },
+        div: function(){
+            return this.numero1 /this.numero2
+        }
+
+    }
+
+   })
+
+
+
+    </script>  
+</body>
+</html>

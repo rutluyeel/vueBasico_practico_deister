@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiples instancias</title>
+</head>
+<body>
+    <div id="app">
+        {{titulo}}
+        <p>Este es el componente 1</p>
+        <input type="text" v-model="nombre">
+        {{nombre}}
+    </div>
+    <hr>
+    <div id="componente">
+        <input type="text" v-model="text">
+        {{text}}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script>
+        const uno =new Vue({
+            el: '#app',
+            data: {
+                titulo: 'GowPlay',
+                nombre: 'juan perez'
+            }
+        })
+        const dos = new Vue({
+            el: '#componente',
+            data: {
+                text: uno.nombre
+            }
+        })
+
+
+
+    </script>
+    
+
+    
+</body>
+</html>

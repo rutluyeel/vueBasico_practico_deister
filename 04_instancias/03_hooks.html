@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hooks</title>
+</head>
+<body>
+   
+    <div id="app">
+        <center>
+        {{titulo}}
+        </center>
+        <input type ="text" v-model="nombre">
+        {{nombre}}
+
+    </div>
+    <hr>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script>
+        const uno = new Vue({
+            el: '#app',
+            data: {
+                titulo: 'GowPlay',
+                nombre: 'juan perez'
+            },
+            //befoCreate = despues inicializacion instancia - antes componente
+            beforeCreate(){
+                alert('Antes de crear componente' + " "+ this.nombre)
+            },
+            //created = ejecuta cuando instancia,evento,propiedad etc
+            created(){
+                alert('creando componente' + " "+ this.nombre)
+            },
+            //beforemount: se ejecuta justo antes añadir al dom
+            beforeMount(){
+                alert('justo antes añadir al DOM' + " "+ this.nombre)
+            },
+            //mounted: se ejecuta despues de añadirlo al dom
+            mounted(){
+                alert('despues de añadirlo al DOM' + " "+ this.nombre)
+            },
+            //beforeUpdate: se ejecuta cuando objeto data cambia al DOM
+            beforeUpdate(){
+                alert('objeto data cambia' + " "+ this.nombre)
+            },
+            update(){
+                alert('objeto data cambio' + " "+ this.nombre)
+            }
+            
+        },
+        )
+    </script>
+
+</body>
+</html>
